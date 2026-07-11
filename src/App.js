@@ -8,11 +8,11 @@ import Vocabulary from './components/Vocabulary/Vocabulary';
 import Pronunciation from './components/Pronunciation/Pronunciation';
 import Achievements from './components/Achievements/Achievements';
 import Profile from './components/Profile/Profile';
-import Onboarding from './components/Onboarding';
-import TongueTwisters from './components/TongueTwisters';
-import DailyMissions from './components/DailyMissions';
-import WorldMode from './components/WorldMode';
-import AIMemory from './components/AIMemory';
+import Onboarding from './components/Onboarding/Onboarding';
+import TongueTwisters from './components/TongueTwisters/TongueTwisters';
+import DailyMissions from './components/DailyMissions/DailyMissions';
+import WorldMode from './components/WorldMode/WorldMode';
+import AIMemory from './components/AIMemory/AIMemory';
 
 const screenTitles = {
   dashboard: { title: 'English Adventures', icon: '🚀' },
@@ -29,7 +29,7 @@ const screenTitles = {
 };
 
 const App = () => {
-  const { currentScreen } = useApp();
+  const { currentScreen, showToast } = useApp();
   const { title, icon } = screenTitles[currentScreen] || screenTitles.dashboard;
 
   const renderScreen = () => {
@@ -56,6 +56,11 @@ const App = () => {
         <main className="pt-0">
           {renderScreen()}
         </main>
+        {showToast && (
+          <div className="xp-toast show">
+            {showToast}
+          </div>
+        )}
         <BottomNav />
       </div>
     </div>
