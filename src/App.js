@@ -1,5 +1,4 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
 import { useApp } from './context/AppContext';
 import Header from './components/Header';
 import BottomNav from './components/BottomNav';
@@ -9,6 +8,11 @@ import Vocabulary from './components/Vocabulary/Vocabulary';
 import Pronunciation from './components/Pronunciation/Pronunciation';
 import Achievements from './components/Achievements/Achievements';
 import Profile from './components/Profile/Profile';
+import Onboarding from './components/Onboarding';
+import TongueTwisters from './components/TongueTwisters';
+import DailyMissions from './components/DailyMissions';
+import WorldMode from './components/WorldMode';
+import AIMemory from './components/AIMemory';
 
 const screenTitles = {
   dashboard: { title: 'English Adventures', icon: '🚀' },
@@ -17,6 +21,11 @@ const screenTitles = {
   pronunciation: { title: 'Pronunciation', icon: '🎙️' },
   achievements: { title: 'Achievements', icon: '🏆' },
   profile: { title: 'Profile', icon: '👤' },
+  onboarding: { title: 'Welcome!', icon: '👋' },
+  tongueTwisters: { title: 'Tongue Twisters', icon: '🗣️' },
+  dailyMissions: { title: 'Daily Missions', icon: '🎯' },
+  worldMode: { title: 'World Mode', icon: '🌍' },
+  aiMemory: { title: 'AI Memory', icon: '🧠' },
 };
 
 const App = () => {
@@ -31,6 +40,11 @@ const App = () => {
       case 'pronunciation': return <Pronunciation />;
       case 'achievements': return <Achievements />;
       case 'profile': return <Profile />;
+      case 'onboarding': return <Onboarding />;
+      case 'tongueTwisters': return <TongueTwisters />;
+      case 'dailyMissions': return <DailyMissions />;
+      case 'worldMode': return <WorldMode />;
+      case 'aiMemory': return <AIMemory />;
       default: return <Dashboard />;
     }
   };
