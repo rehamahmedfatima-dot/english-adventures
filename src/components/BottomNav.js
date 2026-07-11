@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Home, BookOpen, Mic, BookMarked, User, Globe, Brain, Target, MessageCircle } from 'lucide-react';
+import { Home, BookOpen, Mic, BookMarked, User, Globe, Brain } from 'lucide-react';
 
 const BottomNav = () => {
   const { currentScreen, setCurrentScreen } = useApp();
@@ -16,7 +16,7 @@ const BottomNav = () => {
   ];
 
   return (
-    <div className="bottom-nav">
+    <nav className="bottom-nav">
       {navItems.map(item => {
         const Icon = item.icon;
         const isActive = currentScreen === item.id;
@@ -26,12 +26,12 @@ const BottomNav = () => {
             onClick={() => setCurrentScreen(item.id)}
             className={`nav-item ${isActive ? 'active' : ''}`}
           >
-            <Icon size={20} className="nav-icon" />
+            <Icon className="nav-icon" />
             <span>{item.label}</span>
           </button>
         );
       })}
-    </div>
+    </nav>
   );
 };
 
