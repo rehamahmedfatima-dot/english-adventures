@@ -1,5 +1,5 @@
 import React from 'react';
-import { useApp } from '../../context/AppContext';
+import { useApp } from '../context/AppContext';
 import { Flame, Star } from 'lucide-react';
 
 const Header = ({ title, icon }) => {
