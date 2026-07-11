@@ -23,18 +23,11 @@ export const AppProvider = ({ children }) => {
 
   const [currentScreen, setCurrentScreen] = useState('dashboard');
   const [showToast, setShowToast] = useState(null);
-  const [isOnboarding, setIsOnboarding] = useState(false);
-  const [userLevel, setUserLevel] = useState('B1');
-  const [darkMode, setDarkMode] = useState(true);
 
   const addXP = useCallback((amount) => {
     setUser(prev => ({ ...prev, xp: prev.xp + amount }));
-    showToastMessage(`⭐ +${amount} XP!`);
-  }, []);
-
-  const showToastMessage = useCallback((message) => {
-    setShowToast(message);
-    setTimeout(() => setShowToast(null), 2500);
+    setShowToast(`+${amount} XP!`);
+    setTimeout(() => setShowToast(null), 2000);
   }, []);
 
   const value = {
@@ -43,27 +36,9 @@ export const AppProvider = ({ children }) => {
     currentScreen,
     setCurrentScreen,
     showToast,
-    showToastMessage,
-    isOnboarding,
-    setIsOnboarding,
-    userLevel,
-    setUserLevel,
-    darkMode,
-    setDarkMode,
+    setShowToast,
     addXP,
   };
 
-  return (
-    <AppContext.Provider value={value}>
-      {children}
-      {showToast && (
-        <div className="xp-toast show">
-          <span>⭐</span>
-          <span>{showToast}</span>
-        </div>
-      )}
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
-
-export default AppContext;
