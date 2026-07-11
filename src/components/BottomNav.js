@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Home, BookOpen, Mic, BookMarked, User } from 'lucide-react';
+import { Home, BookOpen, Mic, BookMarked, User, Globe, Brain, Target, MessageCircle } from 'lucide-react';
 
 const BottomNav = () => {
   const { currentScreen, setCurrentScreen } = useApp();
@@ -8,8 +8,10 @@ const BottomNav = () => {
   const navItems = [
     { id: 'dashboard', label: 'Home', icon: Home },
     { id: 'story', label: 'Story', icon: BookOpen },
+    { id: 'worldMode', label: 'World', icon: Globe },
     { id: 'pronunciation', label: 'Speak', icon: Mic },
     { id: 'vocabulary', label: 'Words', icon: BookMarked },
+    { id: 'aiMemory', label: 'AI', icon: Brain },
     { id: 'profile', label: 'Profile', icon: User },
   ];
 
