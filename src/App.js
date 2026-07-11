@@ -1,0 +1,51 @@
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { useApp } from './context/AppContext';
+import Header from './components/Header';
+import BottomNav from './components/BottomNav';
+import Dashboard from './components/Dashboard/Dashboard';
+import StoryMode from './components/Story/StoryMode';
+import Vocabulary from './components/Vocabulary/Vocabulary';
+import Pronunciation from './components/Pronunciation/Pronunciation';
+import Achievements from './components/Achievements/Achievements';
+import Profile from './components/Profile/Profile';
+
+const screenTitles = {
+  dashboard: { title: 'English Adventures', icon: '🚀' },
+  story: { title: "Today's Story", icon: '📖' },
+  vocabulary: { title: 'Vocabulary', icon: '📚' },
+  pronunciation: { title: 'Pronunciation', icon: '🎙️' },
+  achievements: { title: 'Achievements', icon: '🏆' },
+  profile: { title: 'Profile', icon: '👤' },
+};
+
+const App = () => {
+  const { currentScreen } = useApp();
+  const { title, icon } = screenTitles[currentScreen] || screenTitles.dashboard;
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'dashboard': return <Dashboard />;
+      case 'story': return <StoryMode />;
+      case 'vocabulary': return <Vocabulary />;
+      case 'pronunciation': return <Pronunciation />;
+      case 'achievements': return <Achievements />;
+      case 'profile': return <Profile />;
+      default: return <Dashboard />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-ea-dark flex justify-center">
+      <div className="w-full max-w-md bg-ea-dark min-h-screen relative">
+        <Header title={title} icon={icon} />
+        <main className="pt-0">
+          {renderScreen()}
+        </main>
+        <BottomNav />
+      </div>
+    </div>
+  );
+};
+
+export default App;
