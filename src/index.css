@@ -64,7 +64,7 @@
   }
 
   .xp-toast {
-    @apply fixed top-16 left-1/2 -translate-x-1/2 bg-gradient-to-r from-ea-orange to-orange-600 text-white px-6 py-3 rounded-full font-bold text-sm z-[2000] shadow-lg shadow-orange-500/40 transition-transform duration-400;
+    @apply fixed top-16 left-1/2 -translate-x-1/2 bg-gradient-to-r from-ea-orange to-orange-600 text-white px-6 py-3 rounded-full font-bold text-sm z-[2000] shadow-lg shadow-orange-500/40 transition-transform duration-300;
     transform: translateX(-50%) translateY(-100px);
   }
 
