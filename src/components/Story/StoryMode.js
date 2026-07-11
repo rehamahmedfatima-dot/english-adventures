@@ -1,165 +1,164 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { getTodayStory } from '../../data/stories';
-import { Volume2, ChevronRight, Star } from 'lucide-react';
+import { Volume2, ChevronRight, RotateCcw } from 'lucide-react';
+
+const storyData = {
+  title: 'The Lost Key at the Airport',
+  titleAr: 'المفتاح المفقود في المطار',
+  level: 'B1',
+  duration: '15 min',
+  parts: [
+    {
+      id: 1,
+      text: 'Sarah stood at the airport security checkpoint, her heart racing. She reached into her pocket and felt nothing.',
+      textAr: 'وقفت سارة عند نقطة تفتيش الأمن في المطار، وقلبها يدق بسرعة. وصلت إلى جيبها ولم تشعر بشيء.',
+      words: ['checkpoint', 'racing', 'reached'],
+      choices: [
+        { text: 'Panic and tell the officer', textAr: 'الذعر وإخبار الضابط', next: 2 },
+        { text: 'Stay calm and check again', textAr: 'البقاء هادئاً والتفتيش مرة أخرى', next: 3 },
+      ],
+    },
+    {
+      id: 2,
+      text: 'The security officer looked at her with concern. "Lost something, miss?" he asked in a deep voice.',
+      textAr: 'نظر إليها ضابط الأمن بقلق. "فقدتِ شيئاً يا آنسة؟" سأل بصوت عميق.',
+      words: ['concern', 'deep'],
+      choices: [
+        { text: 'Yes, my house key!', textAr: 'نعم، مفتاح منزلي!', next: 4 },
+        { text: 'Its nothing important', textAr: 'إنه لا شيء مهم', next: 5 },
+      ],
+    },
+    {
+      id: 3,
+      text: 'Sarah took a deep breath and checked her bag. There it was - the key had fallen into a small pocket!',
+      textAr: 'أخذت سارة نفساً عميقاً وفحصت حقيبتها. كان هناك - سقط المفتاح في جيب صغير!',
+      words: ['breath', 'fallen'],
+      choices: [
+        { text: 'Smile and proceed', textAr: 'ابتسم واستمر', next: 6 },
+        { text: 'Thank the officer anyway', textAr: 'اشكر الضابط على أي حال', next: 6 },
+      ],
+    },
+    {
+      id: 4,
+      text: '"Dont worry, miss. We can help you find it. Let me call the lost and found department," the officer said kindly.',
+      textAr: '"لا تقلقي يا آنسة. يمكننا مساعدتك في العثور عليه. دعني أتصل بقسم المفقودات،" قال الضابط بلطف.',
+      words: ['department', 'kindly'],
+      choices: [
+        { text: 'Thank you so much!', textAr: 'شكراً جزيلاً!', next: 6 },
+      ],
+    },
+    {
+      id: 5,
+      text: 'The officer nodded but looked suspicious. Sarah realized she should have been honest. Honesty is always the best policy.',
+      textAr: 'أومأ الضابط برأسه لكنه بدا مشبوهاً. أدركت سارة أنها كان يجب أن تكون صادقة. الصدق هو أفضل سياسة دائماً.',
+      words: ['suspicious', 'honest', 'policy'],
+      choices: [
+        { text: 'Admit the truth', textAr: 'اعترف بالحقيقة', next: 4 },
+      ],
+    },
+    {
+      id: 6,
+      text: 'Sarah boarded her flight with a smile. Whether she found the key or not, she learned an important lesson about staying calm.',
+      textAr: 'صعدت سارة إلى طائرتها وهي تبتسم. سواء وجدت المفتاح أم لا، تعلمت درساً مهماً حول البقاء هادئة.',
+      words: ['boarded', 'whether', 'lesson'],
+      choices: [],
+    },
+  ],
+};
 
 const StoryMode = () => {
+  const [currentPart, setCurrentPart] = useState(0);
+  const [completedWords, setCompletedWords] = useState([]);
   const { addXP } = useApp();
-  const story = getTodayStory();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [selectedChoice, setSelectedChoice] = useState(null);
-  const [showTranslation, setShowTranslation] = useState(false);
-  const [highlightedWord, setHighlightedWord] = useState(null);
+
+  const part = storyData.parts[currentPart];
+  const progress = ((currentPart + 1) / storyData.parts.length) * 100;
 
   const speak = (text) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.8;
-      speechSynthesis.speak(utterance);
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    speechSynthesis.speak(utterance);
+  };
+
+  const handleChoice = (nextId) => {
+    if (part.words) {
+      setCompletedWords(prev => [...prev, ...part.words]);
+      addXP(10);
+    }
+    const nextIndex = storyData.parts.findIndex(p => p.id === nextId);
+    if (nextIndex >= 0) {
+      setCurrentPart(nextIndex);
     }
   };
 
-  const handleChoice = (choice) => {
-    setSelectedChoice(choice);
-    addXP(15);
-    setTimeout(() => {
-      setSelectedChoice(null);
-      if (currentStep < story.content.length - 1) {
-        setCurrentStep(prev => prev + 1);
-      }
-    }, 1500);
+  const restart = () => {
+    setCurrentPart(0);
+    setCompletedWords([]);
   };
 
-  const currentContent = story.content[currentStep];
-
   return (
-    <div className="screen-container">
-      {/* Story Header */}
-      <div className="px-5 pt-4 pb-2">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-ea-text font-bold text-lg">{story.title}</h2>
-          <span className="text-ea-text-secondary text-xs">{story.duration}</span>
+    <div className="screen-container px-5 py-6">
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="bg-ea-gold/20 text-ea-gold text-xs px-2 py-1 rounded-full">{storyData.level}</span>
+          <span className="bg-ea-card text-ea-text-secondary text-xs px-2 py-1 rounded-full">{storyData.duration}</span>
         </div>
-        <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-ea-orange to-ea-gold rounded-full transition-all"
-            style={{ width: `${((currentStep + 1) / story.content.length) * 100}%` }}
-          />
-        </div>
+        <h2 className="text-white font-bold text-xl mb-1">{storyData.title}</h2>
+        <p className="text-ea-text-secondary text-sm">{storyData.titleAr}</p>
       </div>
 
-      {/* Story Content */}
-      <div className="px-5 py-4">
-        {currentContent.type === 'narration' && (
-          <div className="ea-card mb-4">
-            <p className="text-ea-text leading-relaxed text-base">
-              {currentContent.text.split(' ').map((word, idx) => (
-                <span 
-                  key={idx}
-                  onClick={() => {
-                    setHighlightedWord(word);
-                    speak(word);
-                  }}
-                  className={`cursor-pointer transition-colors ${
-                    story.words.includes(word.toLowerCase().replace(/[.,!?]/, '')) 
-                      ? 'text-ea-orange font-semibold hover:text-ea-gold' 
-                      : 'hover:text-ea-gold'
-                  }`}
-                >
-                  {word}{' '}
+      <div className="w-full h-2 bg-ea-card rounded-full mb-6">
+        <div className="h-full bg-gradient-to-r from-ea-gold to-ea-orange rounded-full transition-all" style={{ width: `${progress}%` }} />
+      </div>
+
+      <div className="bg-ea-card rounded-2xl p-5 mb-6">
+        <button onClick={() => speak(part.text)} className="flex items-center gap-2 text-ea-gold mb-4">
+          <Volume2 className="w-4 h-4" />
+          <span className="text-sm">Listen</span>
+        </button>
+
+        <p className="text-white text-base leading-relaxed mb-3">{part.text}</p>
+        <p className="text-ea-text-secondary text-sm leading-relaxed">{part.textAr}</p>
+
+        {part.words && part.words.length > 0 && (
+          <div className="mt-4 pt-4 border-t border-ea-darker">
+            <p className="text-ea-gray text-xs mb-2">New Words:</p>
+            <div className="flex flex-wrap gap-2">
+              {part.words.map((word, idx) => (
+                <span key={idx} className="bg-ea-darker text-ea-gold text-xs px-3 py-1 rounded-full">
+                  {word}
                 </span>
               ))}
-            </p>
-            <button 
-              onClick={() => setShowTranslation(!showTranslation)}
-              className="text-ea-text-secondary text-xs mt-2 underline"
-            >
-              {showTranslation ? 'Hide' : 'Show'} Translation
-            </button>
-            {showTranslation && (
-              <p className="text-ea-text-secondary text-sm mt-2 border-r-2 border-ea-orange pr-3">
-                {currentContent.textAr}
-              </p>
-            )}
-            <button 
-              onClick={() => speak(currentContent.text)}
-              className="mt-3 flex items-center gap-2 text-ea-orange text-sm font-semibold"
-            >
-              <Volume2 size={16} /> Listen
-            </button>
-          </div>
-        )}
-
-        {currentContent.type === 'dialogue' && (
-          <div className="ea-card mb-4 border-l-4 border-l-ea-blue">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-ea-blue to-blue-600 flex items-center justify-center text-sm">
-                {currentContent.speaker[0]}
-              </div>
-              <span className="text-ea-blue font-bold text-sm">{currentContent.speaker}</span>
-            </div>
-            <p className="text-ea-text leading-relaxed">{currentContent.text}</p>
-            <p className="text-ea-text-secondary text-sm mt-2">{currentContent.textAr}</p>
-            <button 
-              onClick={() => speak(currentContent.text)}
-              className="mt-2 flex items-center gap-2 text-ea-orange text-sm font-semibold"
-            >
-              <Volume2 size={16} /> Listen
-            </button>
-          </div>
-        )}
-
-        {currentContent.type === 'choice' && (
-          <div className="mb-4">
-            <h3 className="text-ea-gold font-bold text-lg mb-3 flex items-center gap-2">
-              <Star size={18} /> Your Turn!
-            </h3>
-            <p className="text-ea-text mb-4">{currentContent.question}</p>
-            {currentContent.choices.map((choice, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleChoice(choice)}
-                className={`w-full text-right p-4 rounded-xl mb-2 font-semibold transition-all ${
-                  selectedChoice === choice 
-                    ? 'bg-ea-green/20 border-2 border-ea-green text-ea-green' 
-                    : selectedChoice 
-                      ? 'bg-ea-card border border-ea-border text-ea-text-secondary opacity-50'
-                      : 'bg-ea-card border border-ea-border text-ea-text hover:border-ea-orange hover:bg-ea-card-hover'
-                }`}
-              >
-                {selectedChoice === choice && '✅ '}{choice}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Word Popup */}
-        {highlightedWord && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={() => setHighlightedWord(null)}>
-            <div className="bg-ea-card border border-ea-border rounded-2xl p-6 max-w-sm w-full" onClick={e => e.stopPropagation()}>
-              <h3 className="text-2xl font-bold text-ea-orange mb-1">{highlightedWord}</h3>
-              <p className="text-ea-text-secondary mb-4">Translation will appear here</p>
-              <button 
-                onClick={() => speak(highlightedWord)}
-                className="ea-btn-primary w-full flex items-center justify-center gap-2"
-              >
-                <Volume2 size={18} /> Listen
-              </button>
             </div>
           </div>
-        )}
-
-        {/* Next Button */}
-        {currentContent.type !== 'choice' && currentStep < story.content.length - 1 && (
-          <button 
-            onClick={() => setCurrentStep(prev => prev + 1)}
-            className="ea-btn-primary w-full flex items-center justify-center gap-2 mt-4"
-          >
-            Next <ChevronRight size={18} />
-          </button>
         )}
       </div>
+
+      {part.choices.length > 0 ? (
+        <div className="space-y-3">
+          {part.choices.map((choice, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleChoice(choice.next)}
+              className="w-full bg-gradient-to-r from-ea-orange to-rose-500 rounded-xl p-4 text-left hover:opacity-90 transition-opacity"
+            >
+              <p className="text-white font-medium">{choice.text}</p>
+              <p className="text-white/70 text-sm">{choice.textAr}</p>
+              <ChevronRight className="w-5 h-5 text-white/50 mt-2" />
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-8">
+          <p className="text-ea-gold text-2xl mb-2">🎉 Story Complete!</p>
+          <p className="text-ea-text-secondary text-sm mb-4">You learned {completedWords.length} new words</p>
+          <button onClick={restart} className="flex items-center gap-2 mx-auto bg-ea-card text-white px-6 py-3 rounded-xl">
+            <RotateCcw className="w-4 h-4" />
+            Read Again
+          </button>
+        </div>
+      )}
     </div>
   );
 };
